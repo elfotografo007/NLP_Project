@@ -10,7 +10,8 @@ class BayesModel(Model):
     '''
     Bayes Model
     '''
-
+    def __init__(self):
+        pass
 
     def train(self, inputs, targets, **options):
         pass
