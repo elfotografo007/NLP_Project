@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from model import Model
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import LabelEncoder
 
@@ -24,24 +24,14 @@ class LogisticRegressionModel(Model):
         self.__label_encoder = LabelEncoder()
         self.__train_labels = self.__label_encoder.fit_transform(targets)
         X = self.__bigram_vectorizer.transform(inputs)
-        self.__model = LogisticRegression(solver='sag', max_iter=100, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
+        #self.__model = LogisticRegressionCV(cv=5, solver='sag', max_iter=100, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
+        self.__model = LogisticRegression(solver='liblinear', max_iter=200, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
+        print(self.__model.get_params())
     
     def classify(self, inputs):
         X = self.__bigram_vectorizer.transform(inputs)
         prediction = self.__model.predict(X)
         return self.__label_encoder.inverse_transform(prediction)
-    
-    def getMetrics(self, inputs, targets):
-        pass
-    
-    def printConfusion(self):
-        pass
-    
-    def save(self):
-        pass
-    
-    def load(self):
-        pass
     
 if __name__ == '__main__':
     X = ['Fed official says weak data caused by weather, should not slow taper', "Fed's Charles Plosser sees high bar for change in pace of tapering", 'US open: Stocks fall after Fed official hints at accelerated tapering', "Fed risks falling 'behind the curve', Charles Plosser says", "Fed's Plosser: Nasty Weather Has Curbed Job Growth", 'Plosser: Fed May Have to Accelerate Tapering Pace', "Fed's Plosser: Taper pace may be too slow", "Fed's Plosser expects US unemployment to fall to 6.2% by the end of 2014", 'US jobs growth last month hit by weather:Fed President Charles Plosser']
