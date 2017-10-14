@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 import csv
 from logistic_model import LogisticRegressionModel
 from sklearn.model_selection import train_test_split
@@ -26,12 +25,9 @@ if __name__ == '__main__':
      
     lm.train(training, l_training)
     y = lm.classify(test)
-    good =0
-    for yn, t in zip(y,l_test):
-        if yn == t:
-            good += 1
-    print(good/len(y))
+
     print(lm.getMetrics(test, l_test))
+    lm.printConfusion(test, l_test)
     print(lm.classify(['Today’s Top Supply Chain and Logistics News From WSJ']))
     print(lm.classify(['Facebook Users Were Unwitting Targets of Russia-Backed Scheme']))
     print(lm.classify(['Explaining Health Insurance Cost-Sharing Reductions']))
