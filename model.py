@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.externals import joblib
+
 '''
 Created on Oct 6, 2017
 
@@ -18,7 +19,7 @@ class Model(object):
     
     def classify(self, inputs):
         pass
-    
+
     def getMetrics(self, inputs, targets):
         return classification_report(targets, self.classify(inputs))
     

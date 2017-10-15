@@ -27,11 +27,18 @@ if __name__ == '__main__':
     lm.train(training, l_training)
     y = lm.classify(test)
 
+    print(lm)
+    lm.parameter_tuning(training, l_training)
+    print(lm.eval(test, l_test))
     print(lm.getMetrics(test, l_test))
     lm.printConfusion(test, l_test)
     print(lm.classify(['Today’s Top Supply Chain and Logistics News From WSJ']))
     print(lm.classify(['Facebook Users Were Unwitting Targets of Russia-Backed Scheme']))
     print(lm.classify(['Explaining Health Insurance Cost-Sharing Reductions']))
     print(lm.classify(["Nelly's Rape Accuser Says She Will NOT Testify, Wants to Drop the Case"]))
+    print(lm.classify(["Beyonce and Jay-z are expecting twins"]))
+    print(lm.classify(["Twitter extends its character limit to 240 words"]))
+    print(lm.classify(["Ebola virus strikes again in the West"]))
+
           
           
