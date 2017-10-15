@@ -2,6 +2,7 @@
 import numpy as np
 import csv
 from logistic_model import LogisticRegressionModel
+from bayes_model import BayesModel
 from sklearn.model_selection import train_test_split
 # steps:
 # 1. tokenize
@@ -12,7 +13,7 @@ from sklearn.model_selection import train_test_split
 # 6. Maybe try word2vec if there is time
 
 if __name__ == '__main__':
-    with open('uci-news-aggregator.csv', 'r') as csvfile:
+    with open('uci-news-aggregator.csv', 'r', encoding='Latin-1') as csvfile:
         reader = csv.reader(csvfile)
         inputs = []
         targets = []
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     # Split dataset into Training and test
     training, test, l_training, l_test = train_test_split(inputs, targets, test_size=0.2)
         
-    lm = LogisticRegressionModel(inputs)
+    lm = BayesModel(inputs)
      
     lm.train(training, l_training)
     y = lm.classify(test)
