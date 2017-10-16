@@ -28,8 +28,10 @@ if __name__ == '__main__':
     y = lm.classify(test)
 
     print(lm)
+    print(lm.count_label_occurences(targets))
     lm.parameter_tuning(training, l_training)
-    print(lm.eval(test, l_test))
+    print("Accuracy Training" + str(lm.eval(training, l_training)))
+    print("Accuracy Test" + str(lm.eval(test, l_test)))
     print(lm.getMetrics(test, l_test))
     lm.printConfusion(test, l_test)
     print(lm.classify(['Today’s Top Supply Chain and Logistics News From WSJ']))

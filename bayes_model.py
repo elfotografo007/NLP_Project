@@ -11,6 +11,7 @@ from sklearn.model_selection import cross_val_score, KFold
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 '''
@@ -24,7 +25,7 @@ class BayesModel(Model):
     Bayes Model
     '''
     def __init__(self, corpus):
-        self.__bigram_vectorizer = TfidfVectorizer(ngram_range=(2,2), analyzer='word', stop_words='english')
+        self.__bigram_vectorizer = CountVectorizer(ngram_range=(2,2), analyzer='word', stop_words='english')
         self.__bigrams = self.__bigram_vectorizer.fit_transform(corpus)
         print (self.__bigrams.shape)
         #print(self.__bigram_vectorizer.get_stop_words())
@@ -33,8 +34,8 @@ class BayesModel(Model):
         self.__label_encoder = LabelEncoder()
         self.__train_labels = self.__label_encoder.fit_transform(targets)
         X = self.__bigram_vectorizer.transform(inputs)
-        self.__model = MultinomialNB(alpha= 0.20000000000000001).fit(X, self.__train_labels)
-              
+        self.__model = MultinomialNB(alpha= 1.0).fit(X, self.__train_labels)
+            
         
     def parameter_tuning(self, inputs, targets, **options):
         self.__label_encoder = LabelEncoder()
@@ -51,8 +52,8 @@ class BayesModel(Model):
         param_grid = {"alpha": np.array([1, 0.1, 0.01, 0.2, 0.02, 0.3, 0.03, 0.4, 0.04, 0.5, 0.05, 0.6, 0.06, 0.7, 0.07, 0.8, 0.08, 0.9, 0.09, 0])}
         gcv = GridSearchCV(self.__model, param_grid, cv=kf)
         gcv.fit(X, self.__train_labels)
-        print(gcv.best_params_)
-        print(gcv.best_score_)
+        print("Best alpha parameter" + str(gcv.best_params_))
+        print("Best alpha score" + str(gcv.best_score_))
         
     def classify(self, inputs):
          X = self.__bigram_vectorizer.transform(inputs)
@@ -61,7 +62,7 @@ class BayesModel(Model):
 
     def eval(self, inputs, targets):
         predicted = self.classify(inputs)
-        return accuracy_score(targets, predicted, normalize=False)
+        return accuracy_score(targets, predicted)
     
 if __name__ == '__main__':
     X = ['Fed official says weak data caused by weather, should not slow taper', "Fed's Charles Plosser sees high bar for change in pace of tapering", 'US open: Stocks fall after Fed official hints at accelerated tapering', "Fed risks falling 'behind the curve', Charles Plosser says", "Fed's Plosser: Nasty Weather Has Curbed Job Growth", 'Plosser: Fed May Have to Accelerate Tapering Pace', "Fed's Plosser: Taper pace may be too slow", "Fed's Plosser expects US unemployment to fall to 6.2% by the end of 2014", 'US jobs growth last month hit by weather:Fed President Charles Plosser']
