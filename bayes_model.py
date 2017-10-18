@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.model_selection import cross_val_score, KFold
+from sklearn.model_selection import cross_val_score, KFold, StratifiedKFold
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 import numpy as np
@@ -25,7 +25,7 @@ class BayesModel(Model):
     Bayes Model
     '''
     def __init__(self, corpus):
-        self.__bigram_vectorizer = CountVectorizer(ngram_range=(2,2), analyzer='word', stop_words='english')
+        self.__bigram_vectorizer = TfidfVectorizer(ngram_range=(2, 2), analyzer='word', stop_words='english')
         self.__bigrams = self.__bigram_vectorizer.fit_transform(corpus)
         print (self.__bigrams.shape)
         #print(self.__bigram_vectorizer.get_stop_words())
@@ -34,21 +34,21 @@ class BayesModel(Model):
         self.__label_encoder = LabelEncoder()
         self.__train_labels = self.__label_encoder.fit_transform(targets)
         X = self.__bigram_vectorizer.transform(inputs)
-        self.__model = MultinomialNB(alpha= 1.0).fit(X, self.__train_labels)
+        self.__model = MultinomialNB(alpha=0.20000000000000001).fit(X, self.__train_labels)
             
         
     def parameter_tuning(self, inputs, targets, **options):
         self.__label_encoder = LabelEncoder()
         self.__train_labels = self.__label_encoder.fit_transform(targets)
         X = self.__bigram_vectorizer.transform(inputs)
-        kf = KFold(10, shuffle=True, random_state=1)
-        #evaluation = cross_val_score(model, X, self.__train_labels, cv=kf)
-        #print(evaluation)
-        #rmses = [np.sqrt(np.absolute(mse)) for mse in evaluation]
-        #avg_rmse = np.mean(rmses)
-        #std_rmse = np.std(rmses)
-        #print(avg_rmse)
-        #print(std_rmse)
+        kf = StratifiedKFold(n_splits=5, shuffle=False, random_state=None)
+        evaluation = cross_val_score(self.__model, X, self.__train_labels, cv=kf)
+        print(evaluation)
+        rmses = [np.sqrt(np.absolute(mse)) for mse in evaluation]
+        avg_rmse = np.mean(rmses)
+        std_rmse = np.std(rmses)
+        print(avg_rmse)
+        print(std_rmse)
         param_grid = {"alpha": np.array([1, 0.1, 0.01, 0.2, 0.02, 0.3, 0.03, 0.4, 0.04, 0.5, 0.05, 0.6, 0.06, 0.7, 0.07, 0.8, 0.08, 0.9, 0.09, 0])}
         gcv = GridSearchCV(self.__model, param_grid, cv=kf)
         gcv.fit(X, self.__train_labels)
