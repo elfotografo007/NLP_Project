@@ -15,8 +15,8 @@ class LogisticRegressionModel(Model):
     Logistic Regression Model
     '''
     
-    def __init__(self, corpus):
-        self.__bigram_vectorizer = CountVectorizer(ngram_range=(2,2))
+    def __init__(self, corpus, feature_extractor=CountVectorizer(ngram_range=(2,2))):
+        self.__bigram_vectorizer = feature_extractor
         self.__bigrams = self.__bigram_vectorizer.fit_transform(corpus)
        
 
@@ -24,9 +24,9 @@ class LogisticRegressionModel(Model):
         self.__label_encoder = LabelEncoder()
         self.__train_labels = self.__label_encoder.fit_transform(targets)
         X = self.__bigram_vectorizer.transform(inputs)
-        #self.__model = LogisticRegressionCV(cv=5, solver='sag', max_iter=100, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
-        self.__model = LogisticRegression(solver='liblinear', max_iter=200, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
-        print(self.__model.get_params())
+        self.__model = LogisticRegressionCV(cv=5, solver='lbfgs', max_iter=100, multi_class='ovr',n_jobs=4, refit=True).fit(X, self.__train_labels)
+        #self.__model = LogisticRegression(solver='liblinear', max_iter=200, multi_class='ovr',n_jobs=4).fit(X, self.__train_labels)
+        print('Best C parameters: ' + str(self.__model.C_))
     
     def classify(self, inputs):
         X = self.__bigram_vectorizer.transform(inputs)
