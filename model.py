@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.externals import joblib
+import pandas as pd
+
 '''
 Created on Oct 6, 2017
 
@@ -18,7 +20,17 @@ class Model(object):
     
     def classify(self, inputs):
         pass
-    
+
+    def count_label_occurences(self, targets):
+        dummies = pd.get_dummies(targets, prefix_sep='_')
+        cat_dict = dict()
+        for col in dummies.columns:
+            count = 0
+            for row in dummies[col]:
+                count += row
+            cat_dict[col] = count
+        return cat_dict
+
     def getMetrics(self, inputs, targets):
         return classification_report(targets, self.classify(inputs))
     
